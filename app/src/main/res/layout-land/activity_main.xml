@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- это макет для альбомной ориентации -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:baselineAligned="false">
+
+    <!-- Фрагмент с выбором городов -->
+    <fragment
+        android:id="@+id/cities"
+        android:name="com.geekbrains.myweatherv3.CitiesFragment"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="2" />
+
+    <!-- Здесь будет погода выбранного города -->
+    <FrameLayout
+        android:id="@+id/coat_of_arms"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:background="?android:attr/detailsElementBackground"/>
+
+</LinearLayout>
