@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -16,15 +15,10 @@ import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSeekBarChangeListener{
     private ImageButton imgBtnGoBack;
-    private String cityName;
-    private TextView editNameChooseCity;
     private TextView textValueCountHoursBetweenForecasts;
     private SeekBar seekBarCountHoursBetweenForecasts;
     private static final String TAG = "myLogs";
     private int countHoursBetweenForecasts = 3;
-    private TextView textBtnMoscow;
-    private TextView textBtnLondon;
-    private TextView textBtnNewYork;
     private CheckBox checkBoxSetVisibleWind;
     private CheckBox checkBoxSetVisiblePressure;
 
@@ -47,20 +41,13 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
 
         seekBarCountHoursBetweenForecasts.setOnSeekBarChangeListener(this);
         setBackBtnClickBehavior();
-        setChooseCityBtnEnterClickBehavior();
-        textBtnMoscow.setOnClickListener(new cityNameBtnClickListener());
-        textBtnLondon.setOnClickListener(new cityNameBtnClickListener());
-        textBtnNewYork.setOnClickListener(new cityNameBtnClickListener());
-
         setSettings();
 
     }
     /*Метод получения из ActiveMain и выставление текущих настроек*/
     private void setSettings() {
-        cityName = Objects.requireNonNull(getIntent().getExtras()).getString("CityName");
-        editNameChooseCity.setText(cityName);
 
-        if (getIntent().getExtras().getBoolean("WindyVisible")) {
+        if (Objects.requireNonNull(getIntent().getExtras()).getBoolean("WindyVisible")) {
             checkBoxSetVisibleWind.setChecked(true);
         } else {
             checkBoxSetVisibleWind.setChecked(false);
@@ -71,26 +58,12 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
         } else {
             checkBoxSetVisiblePressure.setChecked(false);
         }
-    }
 
-    /*Метод-слушатель нажатия по кнопкам с названиями городов */
-    public class cityNameBtnClickListener implements View.OnClickListener
-    {
-        @Override
-        public void onClick(View view)
-        {
-            TextView tv = (TextView)view;
-            switch (tv.getId()) {
-                case R.id.textCityMoscow: editNameChooseCity.setText(textBtnMoscow.getText().toString());
-                    break;
-                case R.id.textCityLondon: editNameChooseCity.setText(textBtnLondon.getText().toString());
-                    break;
-                case R.id.textCityNewYork: editNameChooseCity.setText(textBtnNewYork.getText().toString());
-                    break;
-                default:
-                    break;
-            }
+        if (getIntent().getExtras().getInt("СountHoursBetweenForecasts") != 0) {
+            countHoursBetweenForecasts = getIntent().getExtras().getInt("СountHoursBetweenForecasts");
         }
+        textValueCountHoursBetweenForecasts.setText(String.valueOf(countHoursBetweenForecasts));
+        seekBarCountHoursBetweenForecasts.setProgress(countHoursBetweenForecasts - 1);
     }
 
     @Override
@@ -132,14 +105,6 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
             @Override
             public void onClick(View view) {
                 Intent intentResult = new Intent();
-                if (!editNameChooseCity.getText().toString().equals("")) {
-                    cityName = editNameChooseCity.getText().toString();
-                }
-
-                if (cityName != null) {
-                    intentResult.putExtra("CityName", cityName);
-                    Log.d(TAG, "SettingsAct. CityName: " + cityName);
-                }
 
                 if(checkBoxSetVisibleWind.isChecked()){
                     intentResult.putExtra("windyVisible", true);
@@ -159,23 +124,9 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
                     Log.d(TAG, "SettingsAct. PressureVisible: false");
                 }
 
+                intentResult.putExtra("countHoursBetweenForecasts", countHoursBetweenForecasts);
                 setResult(RESULT_OK, intentResult);
                 finish();
-            }
-        });
-    }
-
-    /*Метод выбора города по нажатию по Enter*/
-    private void setChooseCityBtnEnterClickBehavior() {
-        editNameChooseCity.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-                        (i == KeyEvent.KEYCODE_ENTER)) {
-                    cityName = editNameChooseCity.getText().toString();
-                    return true;
-                }
-                return false;
             }
         });
     }
@@ -183,12 +134,8 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
     /*Метод инициализации полей из ресурсов*/
     private void findView() {
         imgBtnGoBack = findViewById(R.id.imgBtnGoBack);
-        editNameChooseCity = findViewById(R.id.editNameChooseCity);
         textValueCountHoursBetweenForecasts = findViewById(R.id.textValueCountHoursBetweenForecasts);
         seekBarCountHoursBetweenForecasts = findViewById(R.id.seekBarCountHoursBetweenForecasts);
-        textBtnMoscow = findViewById(R.id.textCityMoscow);
-        textBtnLondon = findViewById(R.id.textCityLondon);
-        textBtnNewYork = findViewById(R.id.textCityNewYork);
         checkBoxSetVisibleWind = findViewById(R.id.checkBoxSetVisibleWind);
         checkBoxSetVisiblePressure = findViewById(R.id.checkBoxSetVisiblePressure);
     }

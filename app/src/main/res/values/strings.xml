@@ -51,9 +51,6 @@
     <string name="value_count_hours_between_forecasts">TextView</string>
     <string name="todoImageWithBack">Image Back</string>
     <string name="todoImageWithOk">Image OK</string>
-    <string name="city_moscow">Moscow</string>
-    <string name="city_london">London</string>
-    <string name="city_newyork">New York</string>
     <string name="weather_from_yandex">Weather From Yandex</string>
 </resources>
 

@@ -7,22 +7,6 @@
     android:background="@drawable/background"
     tools:context=".SettingsActivity">
 
-    <EditText
-        android:id="@+id/editNameChooseCity"
-        android:layout_width="260dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:ems="10"
-        android:hint="@string/hint_choose_city"
-        android:importantForAutofill="no"
-        android:inputType="textCapWords"
-        app:layout_constraintBottom_toBottomOf="@+id/imgBtnGoBack"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imgBtnGoBack"
-        app:layout_constraintTop_toTopOf="@+id/imgBtnGoBack"
-        app:layout_constraintVertical_bias="0.0" />
-
     <ImageButton
         android:id="@+id/imgBtnGoBack"
         android:layout_width="40dp"
@@ -39,11 +23,12 @@
         android:id="@+id/checkBoxSetVisibleWind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:checked="true"
         android:text="@string/checkbox_set_visible_wind"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/imgBtnGoBack"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroupPopularCities" />
+        app:layout_constraintTop_toBottomOf="@+id/imgBtnGoBack" />
 
     <CheckBox
         android:id="@+id/checkBoxSetVisiblePressure"
@@ -75,40 +60,6 @@
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/textCountHoursBetweenForecasts"
         app:layout_constraintTop_toBottomOf="@+id/seekBarCountHoursBetweenForecasts" />
-
-    <RadioGroup
-        android:id="@+id/radioGroupPopularCities"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/editNameChooseCity"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editNameChooseCity"
-        app:layout_constraintTop_toBottomOf="@+id/editNameChooseCity">
-
-        <TextView
-            android:id="@+id/textCityMoscow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/city_moscow"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/textCityLondon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/city_london"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/textCityNewYork"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/city_newyork"
-            android:textSize="18sp" />
-    </RadioGroup>
 
     <TextView
         android:id="@+id/textCountHoursBetweenForecasts"

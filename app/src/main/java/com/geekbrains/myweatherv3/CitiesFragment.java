@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -19,10 +19,8 @@ import static com.geekbrains.myweatherv3.WeatherFragment.PARCEL;
 
 // Фрагмент выбора города из списка
 public class CitiesFragment extends Fragment {
-    boolean isExistCoatOfArms;  // Можно ли расположить рядом фрагмент с погодой
-//    int currentPosition = 0;    // Текущая позиция (выбранный город)
-    //+ Меняем текущую позицию на объект Parcel
-    Parcel currentParcel;       // Текущая посылка (номер города и название)
+    boolean isExistWheather;
+    Parcel currentParcel;
 
     // При создании фрагмента укажем его макет
     @Override
@@ -32,7 +30,7 @@ public class CitiesFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @NonNull Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initList(view);
     }
@@ -43,29 +41,27 @@ public class CitiesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Определение, можно ли будет расположить рядом герб в другом фрагменте
-        isExistCoatOfArms = getResources().getConfiguration().orientation
+        isExistWheather = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
 
         // Если это не первое создание, то восстановим текущую позицию
         if (savedInstanceState != null) {
             // Восстановление текущей позиции.
-//            currentPosition = savedInstanceState.getInt("CurrentCity", 0);
             currentParcel = (Parcel) savedInstanceState.getSerializable("CurrentCity");
         } else {
             //+ Если восcтановить не удалось, то сделаем объект с первым индексом
-            currentParcel = new Parcel(0, getResources().getStringArray(R.array.cities)[0]);
+            currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[0], true, true, 3);
         }
 
-        // Если можно нарисовать рядом герб, то сделаем это
-        if (isExistCoatOfArms) {
-            showCoatOfArms(currentParcel);
+        // Если можно нарисовать рядом погоду, то сделаем это
+        if (isExistWheather) {
+            showWeather(currentParcel);
         }
     }
 
     // Сохраним текущую позицию (вызывается перед выходом из фрагмента)
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-//        outState.putInt("CurrentCity", currentPosition);
         //+ Также меняем текущую позицию на Parcel
         outState.putSerializable("CurrentCity", currentParcel);
         super.onSaveInstanceState(outState);
@@ -91,24 +87,28 @@ public class CitiesFragment extends Fragment {
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    currentParcel = new Parcel(fi, getResources().getStringArray(R.array.cities)[fi]);
-                    showCoatOfArms(currentParcel);
+                    boolean visibleWind = currentParcel.isVisibleWind();
+                    boolean visiblePressure = currentParcel.isVisiblePressure();
+                    int countHoursBetweenForecasts = currentParcel.getCountHoursBetweenForecasts();
+                    currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[fi], visibleWind, visiblePressure, countHoursBetweenForecasts);
+//                    currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[fi], true, true, 3);
+                    showWeather(currentParcel);
                 }
             });
         }
     }
 
 
-    // Показать погоду. Ecли возможно, то показать рядом со списком,
+    // Показать погоду. Если возможно, то показать рядом со списком,
     // если нет, то открыть вторую activity
-    private void showCoatOfArms(Parcel parcel) {
-        if (isExistCoatOfArms) {
+    private void showWeather(Parcel parcel) {
+        if (isExistWheather) {
             // Проверим, что фрагмент с погодой существует в activity
             assert getFragmentManager() != null;
             WeatherFragment detail = (WeatherFragment)
                     getFragmentManager().findFragmentById(R.id.coat_of_arms);
             // Если есть необходимость, то выведем погоду
-                if (detail == null || detail.getParcel().getImageIndex() != parcel.getImageIndex()) {
+            if (detail == null || !detail.getParcel().getCityName().equals(parcel.getCityName())) {
                 // Создаем новый фрагмент с текущей позицией для вывода погоды
                 detail = WeatherFragment.create(parcel);
 

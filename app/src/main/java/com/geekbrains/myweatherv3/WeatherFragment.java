@@ -6,6 +6,7 @@ import android.content.Intent;
 //import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import java.util.Calendar;
 
 public class WeatherFragment extends Fragment {
     public static final String PARCEL = "parcel";
-//    private TextView textCity;
     private String cityName;
     private TextView textTempCurrent;
     private TextView textPlusOneHour;
@@ -68,11 +68,10 @@ public class WeatherFragment extends Fragment {
     private TextView textUnitPressurePlusOne;
     private TextView textUnitPressurePlusTwo;
     private TextView textUnitPressurePlusThree;
-    private boolean windyVisible = true;
-    private boolean pressureVisible = true;
+    private boolean windyVisible;
+    private boolean pressureVisible;
+    private int countHoursBetweenForecasts;
     private ImageView imgBtnWeatherToYandex;
-
-    private ImageView coatOfArms;
     private TextView cityNameView;
 
     // Фабричный метод создания фрагмента
@@ -101,23 +100,22 @@ public class WeatherFragment extends Fragment {
 
         initViews(layout);
 
-        // Получить из ресурсов массив указателей на изображения
-//        @SuppressLint("Recycle") TypedArray imgs = getResources().obtainTypedArray(R.array.coatofarms_imgs);
         Parcel parcel = getParcel();
-
-//        cityName = getString(R.string.cityNameMoscow);
-//        textCity.setText(cityName);
 
         cityNameView.setText(parcel.getCityName());
         cityName = parcel.getCityName();
 
+        windyVisible = parcel.isVisibleWind();
+        pressureVisible = parcel.isVisiblePressure();
+        countHoursBetweenForecasts = parcel.getCountHoursBetweenForecasts();
+        setVisiblePressure(pressureVisible);
+        setVisibleWindy(windyVisible);
+
         setTemp(cityName);
-        findCurrentHour();
+        findCurrentHour(countHoursBetweenForecasts);
         setSettingsBtnClickBehavior();
         setYandexBtnClickBehavior();
 
-        // Выбрать по индексу подходящий
-//        coatOfArms.setImageResource(imgs.getResourceId(parcel.getImageIndex(), -1));
         return layout;
     }
 
@@ -127,9 +125,6 @@ public class WeatherFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
-
-//                intent.putExtra("CityName", textCity.getText().toString());
-                intent.putExtra("CityName", cityName);
 
                 if (windyVisible) {
                     intent.putExtra("WindyVisible", true);
@@ -142,6 +137,8 @@ public class WeatherFragment extends Fragment {
                 } else {
                     intent.putExtra("PressureVisible", false);
                 }
+
+                intent.putExtra("СountHoursBetweenForecasts", countHoursBetweenForecasts);
 
                 startActivityForResult(intent, REQUEST_CODE);
             }
@@ -156,27 +153,36 @@ public class WeatherFragment extends Fragment {
         }
 
         if (resultCode == Activity.RESULT_OK){
-            cityNameView.setText(data.getStringExtra("CityName"));
-            cityName = data.getStringExtra("CityName");
             windyVisible = data.getBooleanExtra("windyVisible", false);
             pressureVisible = data.getBooleanExtra("pressureVisible", false);
+            countHoursBetweenForecasts = data.getIntExtra("countHoursBetweenForecasts", 3);
+            findCurrentHour(countHoursBetweenForecasts);
 
             setVisibleWindy(windyVisible);
             setVisiblePressure(pressureVisible);
+
+            Parcel parcel = getParcel();
+
+            parcel.setVisibleWind(windyVisible);
+            parcel.setVisiblePressure(pressureVisible);
+            parcel.setCountHoursBetweenForecasts(countHoursBetweenForecasts);
+
+            Log.d(TAG, "WeatherFragment. WindyVisible - " + windyVisible);
+            Log.d(TAG, "WeatherFragment. PressureVisible - " + pressureVisible);
         }
     }
 
     /*Метод скрытия/отображения из активити view относящихся к давлению*/
     private void setVisiblePressure(boolean pressureVisible) {
         if (!pressureVisible) {
-            textPressureNow.setVisibility(View.INVISIBLE);
-            textPressurePlusOneHour.setVisibility(View.INVISIBLE);
-            textPressurePlusTwoHours.setVisibility(View.INVISIBLE);
-            textPressurePlusThreeHours.setVisibility(View.INVISIBLE);
-            textUnitPressureNow.setVisibility(View.INVISIBLE);
-            textUnitPressurePlusOne.setVisibility(View.INVISIBLE);
-            textUnitPressurePlusTwo.setVisibility(View.INVISIBLE);
-            textUnitPressurePlusThree.setVisibility(View.INVISIBLE);
+            textPressureNow.setVisibility(View.GONE);
+            textPressurePlusOneHour.setVisibility(View.GONE);
+            textPressurePlusTwoHours.setVisibility(View.GONE);
+            textPressurePlusThreeHours.setVisibility(View.GONE);
+            textUnitPressureNow.setVisibility(View.GONE);
+            textUnitPressurePlusOne.setVisibility(View.GONE);
+            textUnitPressurePlusTwo.setVisibility(View.GONE);
+            textUnitPressurePlusThree.setVisibility(View.GONE);
         }
         else {
             textPressureNow.setVisibility(View.VISIBLE);
@@ -193,14 +199,14 @@ public class WeatherFragment extends Fragment {
     /*Метод скрытия/отображения из активити view относящихся к ветру*/
     private void setVisibleWindy(boolean windyVisible) {
         if (!windyVisible) {
-            textWindNow.setVisibility(View.INVISIBLE);
-            textWindPlusOneHour.setVisibility(View.INVISIBLE);
-            textWindPlusTwoHours.setVisibility(View.INVISIBLE);
-            textWindPlusThreeHours.setVisibility(View.INVISIBLE);
-            textUnitWindNow.setVisibility(View.INVISIBLE);
-            textUnitWindPlusOne.setVisibility(View.INVISIBLE);
-            textUnitWindPlusTwo.setVisibility(View.INVISIBLE);
-            textUnitWindPlusThree.setVisibility(View.INVISIBLE);
+            textWindNow.setVisibility(View.GONE);
+            textWindPlusOneHour.setVisibility(View.GONE);
+            textWindPlusTwoHours.setVisibility(View.GONE);
+            textWindPlusThreeHours.setVisibility(View.GONE);
+            textUnitWindNow.setVisibility(View.GONE);
+            textUnitWindPlusOne.setVisibility(View.GONE);
+            textUnitWindPlusTwo.setVisibility(View.GONE);
+            textUnitWindPlusThree.setVisibility(View.GONE);
         }
         else {
             textWindNow.setVisibility(View.VISIBLE);
@@ -220,6 +226,22 @@ public class WeatherFragment extends Fragment {
             case "Moscow":
             case "Москва":
                 setWeatherForMoscow();
+                break;
+            case "London":
+            case "Лондон":
+                setWeatherForLondon();
+                break;
+            case "New York":
+            case "Нью-Йорк":
+                setWeatherForNewYork();
+                break;
+            case "Beijing":
+            case "Пекин":
+                setWeatherForBeijing();
+                break;
+            case "Paris":
+            case "Париж":
+                setWeatherForParis();
                 break;
         }
     }
@@ -304,8 +326,328 @@ public class WeatherFragment extends Fragment {
         textPressurePlusThreeHours.setText(pressurePlusThreeHours);
     }
 
+    /*Метод рандомного заполнения погоды в Лондоне*/
+    private void setWeatherForLondon() {
+        String currentTemp;
+        String tempPlusOneHour;
+        String tempPlusTwoHours;
+        String tempPlusThreeHours;
+        String tempPlusOneDay;
+        String tempPlusOneDayNight;
+        String tempPlusTwoDays;
+        String tempPlusTwoDaysNight;
+        String tempPlusThreeDays;
+        String tempPlusThreeDaysNight;
+        String windNow;
+        String windPlusOneHour;
+        String windPlusTwoHours;
+        String windPlusThreeHours;
+        String pressureNow;
+        String pressurePlusOneHour;
+        String pressurePlusTwoHours;
+        String pressurePlusThreeHours;
+        currentTemp = "+25";
+        textTempCurrent.setText(currentTemp);
+
+        tempPlusOneHour = "+25";
+        tempPlusTwoHours = "+24";
+        tempPlusThreeHours = "+24";
+
+        textTempNow.setText(currentTemp);
+
+        textTempPlusOneHour.setText(tempPlusOneHour);
+        textTempPlusTwoHours.setText(tempPlusTwoHours);
+        textTempPlusThreeHours.setText(tempPlusThreeHours);
+        textTempPlusThreeHours.setText(tempPlusThreeHours);
+
+        imageTypsWeather.setImageResource(R.drawable.cloudy);
+        imageTypsWeatherNow.setImageResource(R.drawable.cloudy);
+        imageTypsWeatherPlusOneHour.setImageResource(R.drawable.cloudy);
+        imageTypsWeatherPlusTwoHours.setImageResource(R.drawable.cloudysun);
+        imageTypsWeatherPlusThreeHours.setImageResource(R.drawable.cloudysun);
+
+        imageTypeWeatherPlusOneDay.setImageResource(R.drawable.cloudysun);
+        imageTypeWeatherPlusOneDayNight.setImageResource(R.drawable.moonandcloudy);
+        imageTypeWeatherPlusTwoDay.setImageResource(R.drawable.sun);
+        imageTypeWeatherPlusTwoDayNight.setImageResource(R.drawable.moon);
+        imageTypeWeatherPlusThreeDay.setImageResource(R.drawable.cloudysunrainy);
+        imageTypeWeatherPlusThreeDayNight.setImageResource(R.drawable.moonandcloudy);
+
+        tempPlusOneDay = "+27";
+        tempPlusOneDayNight = "+20";
+        tempPlusTwoDays = "+27";
+        tempPlusTwoDaysNight = "+22";
+        tempPlusThreeDays = "+28";
+        tempPlusThreeDaysNight = "+23";
+
+        textTempCurrentDayPlusOne.setText(tempPlusOneDay);
+        textTempCurrentDayPlusOneNight.setText(tempPlusOneDayNight);
+        textTempCurrentDayPlusTwo.setText(tempPlusTwoDays);
+        textTempCurrentDayPlusTwoNight.setText(tempPlusTwoDaysNight);
+        textTempCurrentDayPlusThree.setText(tempPlusThreeDays);
+        textTempCurrentDayPlusThreeNight.setText(tempPlusThreeDaysNight);
+
+        windNow = "1.0";
+        windPlusOneHour = "2.0";
+        windPlusTwoHours = "2.5";
+        windPlusThreeHours = "2.1";
+        pressureNow = "760";
+        pressurePlusOneHour = "758";
+        pressurePlusTwoHours = "766";
+        pressurePlusThreeHours = "777";
+
+        textWindNow.setText(windNow);
+        textWindPlusOneHour.setText(windPlusOneHour);
+        textWindPlusTwoHours.setText(windPlusTwoHours);
+        textWindPlusThreeHours.setText(windPlusThreeHours);
+        textPressureNow.setText(pressureNow);
+        textPressurePlusOneHour.setText(pressurePlusOneHour);
+        textPressurePlusTwoHours.setText(pressurePlusTwoHours);
+        textPressurePlusThreeHours.setText(pressurePlusThreeHours);
+    }
+
+    /*Метод рандомного заполнения погоды в Нью-Йорке*/
+    private void setWeatherForNewYork() {
+        String currentTemp;
+        String tempPlusOneHour;
+        String tempPlusTwoHours;
+        String tempPlusThreeHours;
+        String tempPlusOneDay;
+        String tempPlusOneDayNight;
+        String tempPlusTwoDays;
+        String tempPlusTwoDaysNight;
+        String tempPlusThreeDays;
+        String tempPlusThreeDaysNight;
+        String windNow;
+        String windPlusOneHour;
+        String windPlusTwoHours;
+        String windPlusThreeHours;
+        String pressureNow;
+        String pressurePlusOneHour;
+        String pressurePlusTwoHours;
+        String pressurePlusThreeHours;
+        currentTemp = "+31";
+        textTempCurrent.setText(currentTemp);
+
+        tempPlusOneHour = "+32";
+        tempPlusTwoHours = "+31";
+        tempPlusThreeHours = "+29";
+
+        textTempNow.setText(currentTemp);
+
+        textTempPlusOneHour.setText(tempPlusOneHour);
+        textTempPlusTwoHours.setText(tempPlusTwoHours);
+        textTempPlusThreeHours.setText(tempPlusThreeHours);
+        textTempPlusThreeHours.setText(tempPlusThreeHours);
+
+        imageTypsWeather.setImageResource(R.drawable.cloudysun);
+        imageTypsWeatherNow.setImageResource(R.drawable.cloudysun);
+        imageTypsWeatherPlusOneHour.setImageResource(R.drawable.sun);
+        imageTypsWeatherPlusTwoHours.setImageResource(R.drawable.sun);
+        imageTypsWeatherPlusThreeHours.setImageResource(R.drawable.sun);
+
+        imageTypeWeatherPlusOneDay.setImageResource(R.drawable.cloudysun);
+        imageTypeWeatherPlusOneDayNight.setImageResource(R.drawable.moon);
+        imageTypeWeatherPlusTwoDay.setImageResource(R.drawable.sun);
+        imageTypeWeatherPlusTwoDayNight.setImageResource(R.drawable.moon);
+        imageTypeWeatherPlusThreeDay.setImageResource(R.drawable.cloudysun);
+        imageTypeWeatherPlusThreeDayNight.setImageResource(R.drawable.moon);
+
+        tempPlusOneDay = "+29";
+        tempPlusOneDayNight = "+25";
+        tempPlusTwoDays = "+28";
+        tempPlusTwoDaysNight = "+22";
+        tempPlusThreeDays = "+25";
+        tempPlusThreeDaysNight = "+17";
+
+        textTempCurrentDayPlusOne.setText(tempPlusOneDay);
+        textTempCurrentDayPlusOneNight.setText(tempPlusOneDayNight);
+        textTempCurrentDayPlusTwo.setText(tempPlusTwoDays);
+        textTempCurrentDayPlusTwoNight.setText(tempPlusTwoDaysNight);
+        textTempCurrentDayPlusThree.setText(tempPlusThreeDays);
+        textTempCurrentDayPlusThreeNight.setText(tempPlusThreeDaysNight);
+
+        windNow = "0.5";
+        windPlusOneHour = "0";
+        windPlusTwoHours = "2.7";
+        windPlusThreeHours = "4.0";
+        pressureNow = "754";
+        pressurePlusOneHour = "759";
+        pressurePlusTwoHours = "764";
+        pressurePlusThreeHours = "766";
+
+        textWindNow.setText(windNow);
+        textWindPlusOneHour.setText(windPlusOneHour);
+        textWindPlusTwoHours.setText(windPlusTwoHours);
+        textWindPlusThreeHours.setText(windPlusThreeHours);
+        textPressureNow.setText(pressureNow);
+        textPressurePlusOneHour.setText(pressurePlusOneHour);
+        textPressurePlusTwoHours.setText(pressurePlusTwoHours);
+        textPressurePlusThreeHours.setText(pressurePlusThreeHours);
+    }
+
+    /*Метод рандомного заполнения погоды в Пекине*/
+    private void setWeatherForBeijing() {
+        String currentTemp;
+        String tempPlusOneHour;
+        String tempPlusTwoHours;
+        String tempPlusThreeHours;
+        String tempPlusOneDay;
+        String tempPlusOneDayNight;
+        String tempPlusTwoDays;
+        String tempPlusTwoDaysNight;
+        String tempPlusThreeDays;
+        String tempPlusThreeDaysNight;
+        String windNow;
+        String windPlusOneHour;
+        String windPlusTwoHours;
+        String windPlusThreeHours;
+        String pressureNow;
+        String pressurePlusOneHour;
+        String pressurePlusTwoHours;
+        String pressurePlusThreeHours;
+        currentTemp = "+22";
+        textTempCurrent.setText(currentTemp);
+
+        tempPlusOneHour = "+23";
+        tempPlusTwoHours = "+24";
+        tempPlusThreeHours = "+25";
+
+        textTempNow.setText(currentTemp);
+
+        textTempPlusOneHour.setText(tempPlusOneHour);
+        textTempPlusTwoHours.setText(tempPlusTwoHours);
+        textTempPlusThreeHours.setText(tempPlusThreeHours);
+        textTempPlusThreeHours.setText(tempPlusThreeHours);
+
+        imageTypsWeather.setImageResource(R.drawable.sun);
+        imageTypsWeatherNow.setImageResource(R.drawable.sun);
+        imageTypsWeatherPlusOneHour.setImageResource(R.drawable.cloudysun);
+        imageTypsWeatherPlusTwoHours.setImageResource(R.drawable.sun);
+        imageTypsWeatherPlusThreeHours.setImageResource(R.drawable.sun);
+
+        imageTypeWeatherPlusOneDay.setImageResource(R.drawable.cloudysun);
+        imageTypeWeatherPlusOneDayNight.setImageResource(R.drawable.moon);
+        imageTypeWeatherPlusTwoDay.setImageResource(R.drawable.sun);
+        imageTypeWeatherPlusTwoDayNight.setImageResource(R.drawable.moonandcloudy);
+        imageTypeWeatherPlusThreeDay.setImageResource(R.drawable.cloudysunrainy);
+        imageTypeWeatherPlusThreeDayNight.setImageResource(R.drawable.moon);
+
+        tempPlusOneDay = "+25";
+        tempPlusOneDayNight = "+20";
+        tempPlusTwoDays = "+26";
+        tempPlusTwoDaysNight = "+22";
+        tempPlusThreeDays = "+28";
+        tempPlusThreeDaysNight = "+25";
+
+        textTempCurrentDayPlusOne.setText(tempPlusOneDay);
+        textTempCurrentDayPlusOneNight.setText(tempPlusOneDayNight);
+        textTempCurrentDayPlusTwo.setText(tempPlusTwoDays);
+        textTempCurrentDayPlusTwoNight.setText(tempPlusTwoDaysNight);
+        textTempCurrentDayPlusThree.setText(tempPlusThreeDays);
+        textTempCurrentDayPlusThreeNight.setText(tempPlusThreeDaysNight);
+
+        windNow = "1.5";
+        windPlusOneHour = "5.7";
+        windPlusTwoHours = "9.9";
+        windPlusThreeHours = "12.7";
+        pressureNow = "744";
+        pressurePlusOneHour = "755";
+        pressurePlusTwoHours = "765";
+        pressurePlusThreeHours = "770";
+
+        textWindNow.setText(windNow);
+        textWindPlusOneHour.setText(windPlusOneHour);
+        textWindPlusTwoHours.setText(windPlusTwoHours);
+        textWindPlusThreeHours.setText(windPlusThreeHours);
+        textPressureNow.setText(pressureNow);
+        textPressurePlusOneHour.setText(pressurePlusOneHour);
+        textPressurePlusTwoHours.setText(pressurePlusTwoHours);
+        textPressurePlusThreeHours.setText(pressurePlusThreeHours);
+    }
+
+    /*Метод рандомного заполнения погоды в Париже*/
+    private void setWeatherForParis() {
+        String currentTemp;
+        String tempPlusOneHour;
+        String tempPlusTwoHours;
+        String tempPlusThreeHours;
+        String tempPlusOneDay;
+        String tempPlusOneDayNight;
+        String tempPlusTwoDays;
+        String tempPlusTwoDaysNight;
+        String tempPlusThreeDays;
+        String tempPlusThreeDaysNight;
+        String windNow;
+        String windPlusOneHour;
+        String windPlusTwoHours;
+        String windPlusThreeHours;
+        String pressureNow;
+        String pressurePlusOneHour;
+        String pressurePlusTwoHours;
+        String pressurePlusThreeHours;
+        currentTemp = "+33";
+        textTempCurrent.setText(currentTemp);
+
+        tempPlusOneHour = "+32";
+        tempPlusTwoHours = "+34";
+        tempPlusThreeHours = "+33";
+
+        textTempNow.setText(currentTemp);
+
+        textTempPlusOneHour.setText(tempPlusOneHour);
+        textTempPlusTwoHours.setText(tempPlusTwoHours);
+        textTempPlusThreeHours.setText(tempPlusThreeHours);
+        textTempPlusThreeHours.setText(tempPlusThreeHours);
+
+        imageTypsWeather.setImageResource(R.drawable.cloudysun);
+        imageTypsWeatherNow.setImageResource(R.drawable.cloudysun);
+        imageTypsWeatherPlusOneHour.setImageResource(R.drawable.sun);
+        imageTypsWeatherPlusTwoHours.setImageResource(R.drawable.cloudysunrainy);
+        imageTypsWeatherPlusThreeHours.setImageResource(R.drawable.cloudysunrainy);
+
+        imageTypeWeatherPlusOneDay.setImageResource(R.drawable.cloudysunrainy);
+        imageTypeWeatherPlusOneDayNight.setImageResource(R.drawable.moonandcloudy);
+        imageTypeWeatherPlusTwoDay.setImageResource(R.drawable.cloudysun);
+        imageTypeWeatherPlusTwoDayNight.setImageResource(R.drawable.moonandcloudy);
+        imageTypeWeatherPlusThreeDay.setImageResource(R.drawable.cloudysun);
+        imageTypeWeatherPlusThreeDayNight.setImageResource(R.drawable.moon);
+
+        tempPlusOneDay = "+32";
+        tempPlusOneDayNight = "+28";
+        tempPlusTwoDays = "+31";
+        tempPlusTwoDaysNight = "+25";
+        tempPlusThreeDays = "+29";
+        tempPlusThreeDaysNight = "+24";
+
+        textTempCurrentDayPlusOne.setText(tempPlusOneDay);
+        textTempCurrentDayPlusOneNight.setText(tempPlusOneDayNight);
+        textTempCurrentDayPlusTwo.setText(tempPlusTwoDays);
+        textTempCurrentDayPlusTwoNight.setText(tempPlusTwoDaysNight);
+        textTempCurrentDayPlusThree.setText(tempPlusThreeDays);
+        textTempCurrentDayPlusThreeNight.setText(tempPlusThreeDaysNight);
+
+        windNow = "1.0";
+        windPlusOneHour = "1.5";
+        windPlusTwoHours = "1.4";
+        windPlusThreeHours = "2.0";
+        pressureNow = "758";
+        pressurePlusOneHour = "760";
+        pressurePlusTwoHours = "764";
+        pressurePlusThreeHours = "765";
+
+        textWindNow.setText(windNow);
+        textWindPlusOneHour.setText(windPlusOneHour);
+        textWindPlusTwoHours.setText(windPlusTwoHours);
+        textWindPlusThreeHours.setText(windPlusThreeHours);
+        textPressureNow.setText(pressureNow);
+        textPressurePlusOneHour.setText(pressurePlusOneHour);
+        textPressurePlusTwoHours.setText(pressurePlusTwoHours);
+        textPressurePlusThreeHours.setText(pressurePlusThreeHours);
+    }
+
     /*Метод определения текущего дня и часа и вывод на экран информации о ближайших днях и часах*/
-    private void findCurrentHour() {
+    private void findCurrentHour(int countHoursBetweenForecasts) {
         Calendar cDayPlusOne = Calendar.getInstance();
         cDayPlusOne.add(Calendar.DAY_OF_MONTH, 1);
         Calendar cDayPlusTwo = Calendar.getInstance();
@@ -321,15 +663,15 @@ public class WeatherFragment extends Fragment {
 
         Calendar cPlusOneHour = Calendar.getInstance();
         cPlusOneHour.set(Calendar.MINUTE, 0);
-        cPlusOneHour.add(Calendar.HOUR, 3);
+        cPlusOneHour.add(Calendar.HOUR, countHoursBetweenForecasts);
 
         Calendar cPlusTwoHours = Calendar.getInstance();
         cPlusTwoHours.set(Calendar.MINUTE, 0);
-        cPlusTwoHours.add(Calendar.HOUR, 6) ;
+        cPlusTwoHours.add(Calendar.HOUR, 2 * countHoursBetweenForecasts) ;
 
         Calendar cPlusThreeHours = Calendar.getInstance();
         cPlusThreeHours.set(Calendar.MINUTE, 0);
-        cPlusThreeHours.add(Calendar.HOUR, 9);
+        cPlusThreeHours.add(Calendar.HOUR, 3 * countHoursBetweenForecasts);
 
         @SuppressLint("SimpleDateFormat") DateFormat dfHour = new SimpleDateFormat("HH:mm");
         textPlusOneHour.setText(dfHour.format(cPlusOneHour.getTime()));
@@ -380,9 +722,7 @@ public class WeatherFragment extends Fragment {
         return yandexWeatherHttp;
     }
 
-    @SuppressLint("CutPasteId")
     private void initViews(View layout) {
-//        coatOfArms = layout.findViewById(R.id.imageTypsWeather);
         cityNameView = layout.findViewById(R.id.textCity);
         textTempCurrent = layout.findViewById(R.id.textTempCurrent);
         textPlusOneHour = layout.findViewById(R.id.textPlusOneHour);

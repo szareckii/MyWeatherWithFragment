@@ -30,5 +30,4 @@ public class WeatherActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, details).commit();
         }
     }
-
 }

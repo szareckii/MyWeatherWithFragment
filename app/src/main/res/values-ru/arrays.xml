@@ -7,12 +7,4 @@
         <item>Пекин</item>
         <item>Париж</item>
     </string-array>
-
-    <integer-array name="coatofarms_imgs">
-        <item>@drawable/msc</item>
-        <item>@drawable/spb</item>
-        <item>@drawable/ebrg</item>
-        <item>@drawable/nsk</item>
-        <item>@drawable/sam</item>
-    </integer-array>
 </resources>
