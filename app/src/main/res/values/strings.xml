@@ -52,5 +52,7 @@
     <string name="todoImageWithBack">Image Back</string>
     <string name="todoImageWithOk">Image OK</string>
     <string name="weather_from_yandex">Weather From Yandex</string>
+    <string name="itemTextInRV">Item text</string>
+    <string name="choose_city">Сhoose city</string>
 </resources>
 

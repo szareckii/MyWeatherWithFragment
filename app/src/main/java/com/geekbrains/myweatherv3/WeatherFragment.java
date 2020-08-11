@@ -85,6 +85,7 @@ public class WeatherFragment extends Fragment {
         return f;
     }
 
+
     // Получить посылку из параметра
     public Parcel getParcel() {
         assert getArguments() != null;
