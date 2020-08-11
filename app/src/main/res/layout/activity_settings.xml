@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".SettingsActivity">
+
+    <ImageButton
+        android:id="@+id/imgBtnGoBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/todoImageWithBack"
+        android:scaleType="centerCrop"
+        android:src="@drawable/back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBoxSetVisibleWind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:checked="true"
+        android:text="@string/checkbox_set_visible_wind"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/imgBtnGoBack"
+        app:layout_constraintTop_toBottomOf="@+id/imgBtnGoBack" />
+
+    <CheckBox
+        android:id="@+id/checkBoxSetVisiblePressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/checkbox_set_visible_pressure"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/checkBoxSetVisibleWind"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxSetVisibleWind" />
+
+    <Switch
+        android:id="@+id/switchSetTypeUnitDegree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:showText="true"
+        android:text="@string/switch_type_degree"
+        android:textOff="@string/celsius"
+        android:textOn="@string/fahrenheit"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/textSetTypeUnitDegree"
+        app:layout_constraintTop_toBottomOf="@+id/textSetTypeUnitDegree" />
+
+    <TextView
+        android:id="@+id/textSetTypeUnitDegree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/units"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/textCountHoursBetweenForecasts"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarCountHoursBetweenForecasts" />
+
+    <TextView
+        android:id="@+id/textCountHoursBetweenForecasts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_count_hours_between_forecasts"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/checkBoxSetVisiblePressure"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxSetVisiblePressure" />
+
+    <SeekBar
+        android:id="@+id/seekBarCountHoursBetweenForecasts"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="5"
+        android:progress="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textCountHoursBetweenForecasts" />
+
+    <TextView
+        android:id="@+id/textValueCountHoursBetweenForecasts"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:text="@string/value_count_hours_between_forecasts"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.166"
+        app:layout_constraintStart_toEndOf="@+id/textCountHoursBetweenForecasts"
+        app:layout_constraintTop_toTopOf="@+id/textCountHoursBetweenForecasts" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
