@@ -1,20 +1,19 @@
 package com.geekbrains.myweatherv3;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSeekBarChangeListener{
-    private ImageButton imgBtnGoBack;
     private TextView textValueCountHoursBetweenForecasts;
     private SeekBar seekBarCountHoursBetweenForecasts;
     private static final String TAG = "myLogs";
@@ -26,8 +25,14 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         findView();
-        textValueCountHoursBetweenForecasts.setText("3");
+        textValueCountHoursBetweenForecasts.setText("1");
 
         String instanceState;
         if (savedInstanceState == null){
@@ -40,9 +45,39 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
         Log.d(TAG, "SettingsAct." + instanceState + " - onCreate()");
 
         seekBarCountHoursBetweenForecasts.setOnSeekBarChangeListener(this);
-        setBackBtnClickBehavior();
         setSettings();
 
+    }
+
+    /*Метод нажатия на назад в баре*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Intent intentResult = new Intent();
+
+            if (checkBoxSetVisibleWind.isChecked()) {
+                intentResult.putExtra("windyVisible", true);
+                Log.d(TAG, "SettingsAct. WindyVisible: true");
+            } else {
+                intentResult.putExtra("windyVisible", false);
+                Log.d(TAG, "SettingsAct. WindyVisible: false");
+            }
+
+            if (checkBoxSetVisiblePressure.isChecked()) {
+                intentResult.putExtra("pressureVisible", true);
+                Log.d(TAG, "SettingsAct. PressureVisible: true");
+            } else {
+                intentResult.putExtra("pressureVisible", false);
+                Log.d(TAG, "SettingsAct. PressureVisible: false");
+            }
+
+            intentResult.putExtra("countHoursBetweenForecasts", countHoursBetweenForecasts);
+            setResult(RESULT_OK, intentResult);
+
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     /*Метод получения из ActiveMain и выставление текущих настроек*/
     private void setSettings() {
@@ -99,41 +134,8 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
         saveInstanceState.putInt("CountHoursBetweenForecasts", countHoursBetweenForecasts); // Сохраняем количество часов между прогнозами
     }
 
-    /*Метод возврата на Activity_Main*/
-    private void setBackBtnClickBehavior() {
-        imgBtnGoBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intentResult = new Intent();
-
-                if(checkBoxSetVisibleWind.isChecked()){
-                    intentResult.putExtra("windyVisible", true);
-                    Log.d(TAG, "SettingsAct. WindyVisible: true");
-                }
-                else {
-                    intentResult.putExtra("windyVisible", false);
-                    Log.d(TAG, "SettingsAct. WindyVisible: false");
-                }
-
-                if(checkBoxSetVisiblePressure.isChecked()){
-                    intentResult.putExtra("pressureVisible", true);
-                    Log.d(TAG, "SettingsAct. PressureVisible: true");
-                }
-                else {
-                    intentResult.putExtra("pressureVisible", false);
-                    Log.d(TAG, "SettingsAct. PressureVisible: false");
-                }
-
-                intentResult.putExtra("countHoursBetweenForecasts", countHoursBetweenForecasts);
-                setResult(RESULT_OK, intentResult);
-                finish();
-            }
-        });
-    }
-
     /*Метод инициализации полей из ресурсов*/
     private void findView() {
-        imgBtnGoBack = findViewById(R.id.imgBtnGoBack);
         textValueCountHoursBetweenForecasts = findViewById(R.id.textValueCountHoursBetweenForecasts);
         seekBarCountHoursBetweenForecasts = findViewById(R.id.seekBarCountHoursBetweenForecasts);
         checkBoxSetVisibleWind = findViewById(R.id.checkBoxSetVisibleWind);

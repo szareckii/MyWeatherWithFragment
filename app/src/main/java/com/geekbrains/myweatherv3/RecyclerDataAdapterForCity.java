@@ -1,6 +1,6 @@
 package com.geekbrains.myweatherv3;
 
-import android.util.Log;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapter.ViewHolder> {
+public class RecyclerDataAdapterForCity extends RecyclerView.Adapter<RecyclerDataAdapterForCity.ViewHolder> {
     private ArrayList<String> data;
     private IRVOnItemClick onItemClickCallback;
-    private static final String TAG = "myLogs";
+    private int selectedPos = 0;
 
-    public RecyclerDataAdapter(ArrayList<String> data, IRVOnItemClick onItemClickCallback) {
+    public RecyclerDataAdapterForCity(ArrayList<String> data, IRVOnItemClick onItemClickCallback) {
         this.data = data;
         this.onItemClickCallback = onItemClickCallback;
     }
@@ -35,6 +35,7 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
 
         holder.setTextToTextView(text);
         holder.setOnClickForItem(text);
+        holder.itemView.setBackgroundColor(selectedPos == position ? Color.GREEN : Color.TRANSPARENT);
     }
 
     @Override
@@ -59,6 +60,11 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
                 @Override
                 public void onClick(View view) {
                     if(onItemClickCallback != null) {
+                        if (getAdapterPosition() == RecyclerView.NO_POSITION)
+                            return;
+                        notifyItemChanged(selectedPos);
+                        selectedPos = getAdapterPosition();
+                        notifyItemChanged(selectedPos);
                         onItemClickCallback.onItemClicked(text);
                     }
                 }

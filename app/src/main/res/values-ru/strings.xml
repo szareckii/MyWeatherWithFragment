@@ -39,7 +39,7 @@
     <string name="textUnitWindSE">м/с, ЮВ</string>
     <string name="textUnitWindNW">м/с, СЗ</string>
     <string name="textUnitWindNE">м/с, СВ</string>
-    <string name="textUnitPressureNow">мм</string>
+    <string name="textUnitPressureNow">мм рт. ст.</string>
     <string name="textNull"> </string>
     <string name="hint_choose_city">Город</string>
     <string name="switch_type_degree">Температура (C/F)</string>
