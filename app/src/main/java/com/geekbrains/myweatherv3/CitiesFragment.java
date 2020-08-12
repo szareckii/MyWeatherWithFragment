@@ -7,19 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -31,8 +26,6 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
     private static final String TAG = "myLogs";
     View rootView;
     private RecyclerView recyclerView;
-    private RecyclerDataAdapter adapter;
-    private ArrayList<String> listData;
 
     boolean isExistWheather;
     Parcel currentParcel;
@@ -59,7 +52,7 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
 
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        adapter = new RecyclerDataAdapter(listData, this);
+        RecyclerDataAdapterForCity adapter = new RecyclerDataAdapterForCity(listData, this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
@@ -72,7 +65,6 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
 
     @Override
     public void onItemClicked(String itemText) {
-//        Toast.makeText(getActivity(), itemText, Toast.LENGTH_SHORT).show();
         Log.d(TAG, "RecyclerDataAdapter. setOnClickForItem() - " + itemText);
         boolean visibleWind = currentParcel.isVisibleWind();
         boolean visiblePressure = currentParcel.isVisiblePressure();
@@ -97,7 +89,7 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
             currentParcel = (Parcel) savedInstanceState.getSerializable("CurrentCity");
         } else {
             //+ Если восcтановить не удалось, то сделаем объект с первым индексом
-            currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[0], true, true, 3);
+            currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[0], true, true, 1);
         }
 
         // Если можно нарисовать рядом погоду, то сделаем это
@@ -113,41 +105,6 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
         outState.putSerializable("CurrentCity", currentParcel);
         super.onSaveInstanceState(outState);
     }
-
-    // создаем список городов на экране из массива в ресурсах
-//    private void initList(View view) {
-//        LinearLayout layoutView = (LinearLayout)view;
-//        String[] cities = getResources().getStringArray(R.array.cities);
-//
-//        // При помощи этого объекта будем доставать элементы, спрятанные в
-//        LayoutInflater ltInflater = getLayoutInflater();
-//
-//        // В этом цикле создаем элемент TextView,
-//        // заполняем его значениями,
-//        // и добавляем на экран.
-//        // Кроме того, создаем обработку касания на элемент
-//        for(int i=0; i < cities.length; i++){
-//            String city = cities[i];
-//            TextView tv = new TextView(getContext());
-//            tv.setText(city);
-//            tv.setTextSize(30);
-//            tv.setPadding(30,10,0,10);
-//            layoutView.addView(tv);
-//            final int fi = i;
-//
-//            tv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    boolean visibleWind = currentParcel.isVisibleWind();
-//                    boolean visiblePressure = currentParcel.isVisiblePressure();
-//                    int countHoursBetweenForecasts = currentParcel.getCountHoursBetweenForecasts();
-//                    currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[fi], visibleWind, visiblePressure, countHoursBetweenForecasts);
-//                    showWeather(currentParcel);
-//                }
-//            });
-//        }
-//    }
-
 
     // Показать погоду. Если возможно, то показать рядом со списком,
     // если нет, то открыть вторую activity
