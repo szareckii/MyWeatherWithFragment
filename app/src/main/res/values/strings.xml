@@ -39,7 +39,7 @@
     <string name="textUnitWindSE">m/s, SE</string>
     <string name="textUnitWindNW">m/s, NW</string>
     <string name="textUnitWindNE">m/s, NE</string>
-    <string name="textUnitPressureNow">mm</string>
+    <string name="textUnitPressureNow">mm rt. st.</string>
     <string name="textNull"> </string>
     <string name="hint_choose_city">City</string>
     <string name="switch_type_degree">Temperature (C/F)</string>
@@ -52,5 +52,7 @@
     <string name="todoImageWithBack">Image Back</string>
     <string name="todoImageWithOk">Image OK</string>
     <string name="weather_from_yandex">Weather From Yandex</string>
+    <string name="itemTextInRV">Item text</string>
+    <string name="choose_city">Сhoose city</string>
 </resources>
 

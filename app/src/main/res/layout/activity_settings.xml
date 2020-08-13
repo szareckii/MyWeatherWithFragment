@@ -7,28 +7,17 @@
     android:background="@drawable/background"
     tools:context=".SettingsActivity">
 
-    <ImageButton
-        android:id="@+id/imgBtnGoBack"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/todoImageWithBack"
-        android:scaleType="centerCrop"
-        android:src="@drawable/back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <CheckBox
         android:id="@+id/checkBoxSetVisibleWind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:checked="true"
         android:text="@string/checkbox_set_visible_wind"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/imgBtnGoBack"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtnGoBack" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
         android:id="@+id/checkBoxSetVisiblePressure"
@@ -50,7 +39,8 @@
         android:textOn="@string/fahrenheit"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/textSetTypeUnitDegree"
-        app:layout_constraintTop_toBottomOf="@+id/textSetTypeUnitDegree" />
+        app:layout_constraintTop_toBottomOf="@+id/textSetTypeUnitDegree"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <TextView
         android:id="@+id/textSetTypeUnitDegree"
@@ -74,8 +64,8 @@
         android:id="@+id/seekBarCountHoursBetweenForecasts"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:max="5"
-        android:progress="2"
+        android:max="2"
+        android:progress="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textCountHoursBetweenForecasts" />
