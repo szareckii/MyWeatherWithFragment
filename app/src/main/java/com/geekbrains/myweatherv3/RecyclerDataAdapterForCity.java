@@ -1,10 +1,12 @@
 package com.geekbrains.myweatherv3;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class RecyclerDataAdapterForCity extends RecyclerView.Adapter<RecyclerDataAdapterForCity.ViewHolder> {
     private ArrayList<String> data;
     private IRVOnItemClick onItemClickCallback;
+
     private int selectedPos = 0;
 
     public RecyclerDataAdapterForCity(ArrayList<String> data, IRVOnItemClick onItemClickCallback) {
@@ -33,10 +36,31 @@ public class RecyclerDataAdapterForCity extends RecyclerView.Adapter<RecyclerDat
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String text = data.get(position);
 
+        if (holder.textView.getContext().getResources().getConfiguration().orientation
+                != Configuration.ORIENTATION_LANDSCAPE) {
+            holder.textView.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+//        holder.textView.setBackgroundColor(selectedPos == position ? Color.GREEN : Color.TRANSPARENT);
+
+//        if (holder.textView.getContext().getResources().getConfiguration().orientation
+//                == Configuration.ORIENTATION_LANDSCAPE) {
+//            holder.textView.setBackgroundColor(selectedPos == position ? Color.GREEN : Color.TRANSPARENT);
+//        }
+//        else {
+//            holder.textView.setBackgroundColor(selectedPos == position ? Color.GREEN : Color.TRANSPARENT);
+//        }
+
         holder.setTextToTextView(text);
         holder.setOnClickForItem(text);
-        holder.itemView.setBackgroundColor(selectedPos == position ? Color.GREEN : Color.TRANSPARENT);
     }
+
+    void add(String newElement) {
+        selectedPos = data.size();
+        data.add(newElement);
+        notifyItemInserted(data.size() - 1);
+    }
+
 
     @Override
     public int getItemCount() {

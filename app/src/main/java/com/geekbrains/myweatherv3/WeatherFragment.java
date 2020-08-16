@@ -3,6 +3,7 @@ package com.geekbrains.myweatherv3;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +56,8 @@ public class WeatherFragment extends Fragment {
     private RecyclerView hoursRecyclerView;
     private DataClassOfHours[] dataHours;
     private Parcel parcel;
+    private static boolean darkTheme = false;
+    private static boolean oldDarkTheme = false;
 
     // Фабричный метод создания фрагмента
     public static WeatherFragment create(Parcel parcel) {
@@ -84,8 +87,7 @@ public class WeatherFragment extends Fragment {
         findViews(layout);
         parcel = getParcel();
         cityName = parcel.getCityName();
-        cityNameView.setText(parcel.getCityName());
-        cityName = parcel.getCityName();
+        cityNameView.setText(cityName);
 
         windyVisible = parcel.isVisibleWind();
         pressureVisible = parcel.isVisiblePressure();
@@ -116,43 +118,54 @@ public class WeatherFragment extends Fragment {
 
     private void setupRecyclerViewHours(ArrayList<DataClassOfHours> list) {
         hoursRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false);
         RecyclerDataAdapterForHours hoursAdapter = new RecyclerDataAdapterForHours(list);
         hoursRecyclerView.setLayoutManager(layoutManager);
         hoursRecyclerView.setAdapter(hoursAdapter);
     }
 
     private void setupRecyclerViewDays(ArrayList<DataClassOfDays> list) {
+        //если ориентация горизонтальная, то переопределяем layoutManager для выключения скрола у
+        // RecyclerView
+
+        if (Objects.requireNonNull(this.getContext()).getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            CustomGridLayoutManager layoutManager = new CustomGridLayoutManager(getActivity());
+            layoutManager.setScrollEnabled(false);
+            daysRecyclerView.setLayoutManager(layoutManager);
+
+        } else {
+            LinearLayoutManager layoutManager;
+            layoutManager = new LinearLayoutManager(getActivity());
+            daysRecyclerView.setLayoutManager(layoutManager);
+        }
+
         daysRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         RecyclerDataAdapterForDays daysAdapter = new RecyclerDataAdapterForDays(list);
-        daysRecyclerView.setLayoutManager(layoutManager);
         daysRecyclerView.setAdapter(daysAdapter);
     }
 
     /*Метод открытия окна с настройками*/
     private void setSettingsBtnClickBehavior() {
-        imgBtnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+        imgBtnSettings.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), SettingsActivity.class);
 
-                if (windyVisible) {
-                    intent.putExtra("WindyVisible", true);
-                } else {
-                    intent.putExtra("WindyVisible", false);
-                }
-
-                if (pressureVisible) {
-                    intent.putExtra("PressureVisible", true);
-                } else {
-                    intent.putExtra("PressureVisible", false);
-                }
-
-                intent.putExtra("СountHoursBetweenForecasts", countHoursBetweenForecasts);
-
-                startActivityForResult(intent, REQUEST_CODE);
+            if (windyVisible) {
+                intent.putExtra("WindyVisible", true);
+            } else {
+                intent.putExtra("WindyVisible", false);
             }
+
+            if (pressureVisible) {
+                intent.putExtra("PressureVisible", true);
+            } else {
+                intent.putExtra("PressureVisible", false);
+            }
+
+            intent.putExtra("СountHoursBetweenForecasts", countHoursBetweenForecasts);
+
+            startActivityForResult(intent, REQUEST_CODE);
         });
     }
 
@@ -168,6 +181,11 @@ public class WeatherFragment extends Fragment {
             pressureVisible = data.getBooleanExtra("pressureVisible", false);
             countHoursBetweenForecasts = data.getIntExtra("countHoursBetweenForecasts", 1);
             findCurrentHour(countHoursBetweenForecasts);
+            darkTheme = data.getBooleanExtra("darkTheme", false);
+//            if (oldDarkTheme != darkTheme) {
+//                WeatherActivity.this.recreate();
+//                oldDarkTheme = darkTheme;
+//            }
 
             setVisibleWindy(windyVisible);
             setVisiblePressure(pressureVisible);
@@ -233,6 +251,9 @@ public class WeatherFragment extends Fragment {
             case "Paris":
             case "Париж":
                 setWeatherForParis();
+                break;
+            default:
+                setWeatherForNewYork();
                 break;
         }
     }

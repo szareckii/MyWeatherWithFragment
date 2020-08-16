@@ -11,6 +11,9 @@ import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.google.android.material.switchmaterial.SwitchMaterial;
+
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSeekBarChangeListener{
@@ -20,10 +23,20 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
     private int countHoursBetweenForecasts = 3;
     private CheckBox checkBoxSetVisibleWind;
     private CheckBox checkBoxSetVisiblePressure;
+    private static boolean darkTheme = false;
+
+    private SwitchMaterial switchSetLightDarkTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (darkTheme) {
+            setTheme(R.style.AppDarkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         setContentView(R.layout.activity_settings);
 
         ActionBar actionBar = getSupportActionBar();
@@ -46,7 +59,11 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
 
         seekBarCountHoursBetweenForecasts.setOnSeekBarChangeListener(this);
         setSettings();
+        seDarkThemeClickBehavior();
+    }
 
+    public static boolean isDarkTheme() {
+        return darkTheme;
     }
 
     /*Метод нажатия на назад в баре*/
@@ -69,6 +86,12 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
             } else {
                 intentResult.putExtra("pressureVisible", false);
                 Log.d(TAG, "SettingsAct. PressureVisible: false");
+            }
+
+            if (darkTheme) {
+                intentResult.putExtra("darkTheme", true);
+            } else {
+                intentResult.putExtra("darkTheme", false);
             }
 
             intentResult.putExtra("countHoursBetweenForecasts", countHoursBetweenForecasts);
@@ -134,11 +157,19 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
         saveInstanceState.putInt("CountHoursBetweenForecasts", countHoursBetweenForecasts); // Сохраняем количество часов между прогнозами
     }
 
+    private void seDarkThemeClickBehavior() {
+        switchSetLightDarkTheme.setOnClickListener(view -> {
+            darkTheme = switchSetLightDarkTheme.isChecked();
+            recreate();
+        });
+    }
+
     /*Метод инициализации полей из ресурсов*/
     private void findView() {
         textValueCountHoursBetweenForecasts = findViewById(R.id.textValueCountHoursBetweenForecasts);
         seekBarCountHoursBetweenForecasts = findViewById(R.id.seekBarCountHoursBetweenForecasts);
         checkBoxSetVisibleWind = findViewById(R.id.checkBoxSetVisibleWind);
         checkBoxSetVisiblePressure = findViewById(R.id.checkBoxSetVisiblePressure);
+        switchSetLightDarkTheme = findViewById(R.id.switchSetLightDarkTheme);
     }
 }

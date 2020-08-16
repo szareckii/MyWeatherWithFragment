@@ -54,4 +54,13 @@
     <string name="weather_from_yandex">Погода от яндекса</string>
     <string name="itemTextInRV">Item text</string>
     <string name="choose_city">Выберите город</string>
+    <string name="ok_button">Ok</string>
+    <string name="new_city">Новый город</string>
+    <string name="check_cityname">Неверный город</string>
+    <string name="city_name">Город</string>
+    <string name="add_new_city_snackbar">Добавить</string>
+    <string name="add_city_msg">Добавить город</string>
+    <string name="choose_city_snackbar">Выбрать город</string>
+    <string name="dark_theme">Темная тема</string>
+    choose city
 </resources>
