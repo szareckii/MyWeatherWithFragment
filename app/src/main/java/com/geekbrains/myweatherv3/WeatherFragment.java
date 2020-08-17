@@ -56,8 +56,7 @@ public class WeatherFragment extends Fragment {
     private RecyclerView hoursRecyclerView;
     private DataClassOfHours[] dataHours;
     private Parcel parcel;
-    private static boolean darkTheme = false;
-    private static boolean oldDarkTheme = false;
+    private boolean darkTheme;
 
     // Фабричный метод создания фрагмента
     public static WeatherFragment create(Parcel parcel) {
@@ -92,6 +91,7 @@ public class WeatherFragment extends Fragment {
         windyVisible = parcel.isVisibleWind();
         pressureVisible = parcel.isVisiblePressure();
         countHoursBetweenForecasts = parcel.getCountHoursBetweenForecasts();
+        darkTheme =parcel.isDarkTheme();
 
         findCurrentHour(countHoursBetweenForecasts);
 
@@ -165,6 +165,12 @@ public class WeatherFragment extends Fragment {
 
             intent.putExtra("СountHoursBetweenForecasts", countHoursBetweenForecasts);
 
+            if (darkTheme) {
+                intent.putExtra("DarkTheme", true);
+            } else {
+                intent.putExtra("DarkTheme", false);
+            }
+
             startActivityForResult(intent, REQUEST_CODE);
         });
     }
@@ -180,12 +186,9 @@ public class WeatherFragment extends Fragment {
             windyVisible = data.getBooleanExtra("windyVisible", false);
             pressureVisible = data.getBooleanExtra("pressureVisible", false);
             countHoursBetweenForecasts = data.getIntExtra("countHoursBetweenForecasts", 1);
+            darkTheme =  data.getBooleanExtra("darkTheme", false);
+
             findCurrentHour(countHoursBetweenForecasts);
-            darkTheme = data.getBooleanExtra("darkTheme", false);
-//            if (oldDarkTheme != darkTheme) {
-//                WeatherActivity.this.recreate();
-//                oldDarkTheme = darkTheme;
-//            }
 
             setVisibleWindy(windyVisible);
             setVisiblePressure(pressureVisible);
@@ -193,6 +196,7 @@ public class WeatherFragment extends Fragment {
             parcel.setVisibleWind(windyVisible);
             parcel.setVisiblePressure(pressureVisible);
             parcel.setCountHoursBetweenForecasts(countHoursBetweenForecasts);
+            parcel.setDarkTheme(darkTheme);
 
             setTemp(cityName);
 
@@ -202,6 +206,7 @@ public class WeatherFragment extends Fragment {
 
             Log.d(TAG, "WeatherFragment. WindyVisible - " + windyVisible);
             Log.d(TAG, "WeatherFragment. PressureVisible - " + pressureVisible);
+            Log.d(TAG, "WeatherFragment. DarkTheme - " + darkTheme);
         }
     }
 
@@ -741,13 +746,10 @@ public class WeatherFragment extends Fragment {
 
     /*Метод нажатия по кнопке "Погода Яндекса"*/
     private void setYandexBtnClickBehavior() {
-        imgBtnWeatherToYandex.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri uri = Uri.parse(findYandexWeatherHttp(cityName));
-                Intent browser = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(browser);
-            }
+        imgBtnWeatherToYandex.setOnClickListener(view -> {
+            Uri uri = Uri.parse(findYandexWeatherHttp(cityName));
+            Intent browser = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(browser);
         });
     }
 

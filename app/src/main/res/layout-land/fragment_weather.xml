@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textCity"
             app:layout_constraintVertical_bias="0.7"
-            app:srcCompat="@drawable/settings1" />
+            app:srcCompat="@drawable/settings" />
 
         <TextView
             android:id="@+id/textTempCurrent"

@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,16 +39,6 @@ public class RecyclerDataAdapterForCity extends RecyclerView.Adapter<RecyclerDat
             holder.textView.setBackgroundColor(Color.TRANSPARENT);
         }
 
-//        holder.textView.setBackgroundColor(selectedPos == position ? Color.GREEN : Color.TRANSPARENT);
-
-//        if (holder.textView.getContext().getResources().getConfiguration().orientation
-//                == Configuration.ORIENTATION_LANDSCAPE) {
-//            holder.textView.setBackgroundColor(selectedPos == position ? Color.GREEN : Color.TRANSPARENT);
-//        }
-//        else {
-//            holder.textView.setBackgroundColor(selectedPos == position ? Color.GREEN : Color.TRANSPARENT);
-//        }
-
         holder.setTextToTextView(text);
         holder.setOnClickForItem(text);
     }
@@ -60,7 +48,6 @@ public class RecyclerDataAdapterForCity extends RecyclerView.Adapter<RecyclerDat
         data.add(newElement);
         notifyItemInserted(data.size() - 1);
     }
-
 
     @Override
     public int getItemCount() {
@@ -80,17 +67,14 @@ public class RecyclerDataAdapterForCity extends RecyclerView.Adapter<RecyclerDat
         }
 
         void setOnClickForItem(final String text) {
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(onItemClickCallback != null) {
-                        if (getAdapterPosition() == RecyclerView.NO_POSITION)
-                            return;
-                        notifyItemChanged(selectedPos);
-                        selectedPos = getAdapterPosition();
-                        notifyItemChanged(selectedPos);
-                        onItemClickCallback.onItemClicked(text);
-                    }
+            textView.setOnClickListener(view -> {
+                if(onItemClickCallback != null) {
+                    if (getAdapterPosition() == RecyclerView.NO_POSITION)
+                        return;
+                    notifyItemChanged(selectedPos);
+                    selectedPos = getAdapterPosition();
+                    notifyItemChanged(selectedPos);
+                    onItemClickCallback.onItemClicked(text);
                 }
             });
         }

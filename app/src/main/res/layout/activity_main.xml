@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:background="@drawable/background"
     android:layout_height="match_parent">
 
     <!-- в портретной ориентации у activity только один фрагмент -->

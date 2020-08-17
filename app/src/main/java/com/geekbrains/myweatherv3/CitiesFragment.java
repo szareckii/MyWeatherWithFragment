@@ -1,26 +1,22 @@
 package com.geekbrains.myweatherv3;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -50,14 +46,15 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
         findViews();
         setupRecyclerView(savedInstanceState);
         Log.d(TAG, "CitiesFragment. onCreateView()");
-        seCityAddClickBehavior();
+        setCityAddClickBehavior();
         //выключим появление клавиатуры при запуске программы
         Objects.requireNonNull(getActivity()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        setChooseCityBtnEnterClickBehavior();
         return rootView;
     }
 
     /*Метод добавления нового города в список если он удовлетворяет регулярному выражению*/
-    private void seCityAddClickBehavior() {
+    private void setCityAddClickBehavior() {
         cityOkBtn.setOnClickListener(view -> {
             String msgError = getString(R.string.check_cityname);
             String newCityName = newCityNameText.getText().toString();
@@ -124,8 +121,9 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
                     Log.d(TAG, "RecyclerDataAdapter. setOnClickForItem() - " + itemText);
                     boolean visibleWind = currentParcel.isVisibleWind();
                     boolean visiblePressure = currentParcel.isVisiblePressure();
+                    boolean darkTheme = currentParcel.isDarkTheme();
                     int countHoursBetweenForecasts = currentParcel.getCountHoursBetweenForecasts();
-                    currentParcel = new Parcel(itemText, visibleWind, visiblePressure, countHoursBetweenForecasts, listData);
+                    currentParcel = new Parcel(itemText, visibleWind, visiblePressure, countHoursBetweenForecasts, darkTheme, listData);
                     showWeather(currentParcel);
                 }).show();
     }
@@ -145,13 +143,26 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
             currentParcel = (Parcel) savedInstanceState.getSerializable("CurrentCity");
         } else {
             //+ Если востановить не удалось, то сделаем объект с первым индексом
-            currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[0], true, true, 1, listData);
+            currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[0], true, true, 1, false, listData);
         }
 
         // Если можно нарисовать рядом погоду, то сделаем это
         if (isExistWeather) {
             showWeather(currentParcel);
         }
+    }
+
+
+    /*Метод выбора города по нажатию по Enter*/
+    private void setChooseCityBtnEnterClickBehavior() {
+        newCityNameText.setOnKeyListener((view, i, keyEvent) -> {
+            if(keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                    (i == KeyEvent.KEYCODE_ENTER)) {
+                cityOkBtn.callOnClick();
+                return true;
+            }
+            return false;
+        });
     }
 
     // Сохраним текущую позицию (вызывается перед выходом из фрагмента)

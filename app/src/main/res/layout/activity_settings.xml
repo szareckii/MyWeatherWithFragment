@@ -2,10 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
     tools:context=".SettingsActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <CheckBox
         android:id="@+id/checkBoxSetVisibleWind"
@@ -17,7 +32,7 @@
         android:text="@string/checkbox_set_visible_wind"
         style="@style/Text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar1" />
 
     <CheckBox
         android:id="@+id/checkBoxSetVisiblePressure"

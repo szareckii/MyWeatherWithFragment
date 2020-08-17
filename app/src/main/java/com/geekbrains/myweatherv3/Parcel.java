@@ -1,7 +1,5 @@
 package com.geekbrains.myweatherv3;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -10,6 +8,7 @@ public class Parcel implements Serializable {
     private boolean visibleWind;
     private boolean visiblePressure;
     private int countHoursBetweenForecasts;
+    private boolean darkTheme;
     private ArrayList<String> data;
 
     public String getCityName() {
@@ -22,6 +21,10 @@ public class Parcel implements Serializable {
 
     public boolean isVisiblePressure() {
         return visiblePressure;
+    }
+
+    public boolean isDarkTheme() {
+        return darkTheme;
     }
 
     public int getCountHoursBetweenForecasts() {
@@ -44,15 +47,16 @@ public class Parcel implements Serializable {
         this.countHoursBetweenForecasts = countHoursBetweenForecasts;
     }
 
-    public void setData(ArrayList<String> data) {
-        this.data = data;
+    public void setDarkTheme(boolean darkTheme) {
+        this.darkTheme = darkTheme;
     }
 
-    public Parcel(String cityName, boolean visibleWind, boolean visiblePressure, int countHoursBetweenForecasts, ArrayList<String> data) {
+    public Parcel(String cityName, boolean visibleWind, boolean visiblePressure, int countHoursBetweenForecasts, boolean darkTheme, ArrayList<String> data) {
         this.cityName = cityName;
         this.visibleWind = visibleWind;
         this.visiblePressure = visiblePressure;
         this.countHoursBetweenForecasts = countHoursBetweenForecasts;
+        this.darkTheme = darkTheme;
         this.data = data;
     }
 }

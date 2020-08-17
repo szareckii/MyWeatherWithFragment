@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+/* Кастомный LayoutManager для возможности отключения скрола*/
 public class CustomGridLayoutManager extends LinearLayoutManager {
     private boolean isScrollEnabled = true;
 

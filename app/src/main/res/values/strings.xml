@@ -54,7 +54,7 @@
     <string name="weather_from_yandex">Weather From Yandex</string>
     <string name="itemTextInRV">Item text</string>
     <string name="choose_city">Сhoose city</string>
-    <string name="ok_button">Ok</string>
+    <string name="ok_button">OK</string>
     <string name="new_city">New city</string>
     <string name="check_cityname">Wrong city name</string>
     <string name="city_name">City name</string>
@@ -62,5 +62,9 @@
     <string name="add_city_msg">Add city</string>
     <string name="choose_city_snackbar">Сhoose city</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="developers">Developers</string>
+    <string name="about_textview">My weather</string>
+    <string name="version_textview">Version 0.1</string>
+    <string name="developer_textview">Zareckii Stanislav</string>
 </resources>
 

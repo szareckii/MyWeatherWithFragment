@@ -2,11 +2,7 @@ package com.geekbrains.myweatherv3;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Objects;
 
 // Эта activity для показа погоды в портретной ориентации
 public class WeatherActivity extends AppCompatActivity {
@@ -41,4 +37,9 @@ public class WeatherActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+        recreate();
+    }
 }
