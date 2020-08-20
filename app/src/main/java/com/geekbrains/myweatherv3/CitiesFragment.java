@@ -3,6 +3,7 @@ package com.geekbrains.myweatherv3;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,12 +17,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.geekbrains.myweatherv3.model.SearchRequest;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
+import javax.net.ssl.HttpsURLConnection;
 import static com.geekbrains.myweatherv3.WeatherFragment.PARCEL;
 
 // Фрагмент выбора города из списка
@@ -37,6 +45,11 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
     Pattern checkCityName = Pattern.compile("^[а-яА-ЯёЁa-zA-Z0-9]+$");
     ArrayList<String> listData;
     LinearLayoutManager layoutManager;
+    private static final String WEATHER_URL_FOR_SEARCH = "https://api.openweathermap.org/data/2.5/weather?lang=ru&q=";
+    private static final String WEATHER_SET_API_KEY_FOR_SEARCH = "&appid=";
+    private static String WEATHER_URL_CITY_FOR_SEARCH;
+    float lon;
+    float lat;
 
     // При создании фрагмента укажем его макет
     @Override
@@ -44,6 +57,7 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_list, container, false);
         findViews();
+
         setupRecyclerView(savedInstanceState);
         Log.d(TAG, "CitiesFragment. onCreateView()");
         setCityAddClickBehavior();
@@ -63,8 +77,9 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
                 Snackbar.make(view, getString(R.string.add_city_msg) + " " + newCityName + "?",  Snackbar.LENGTH_LONG)
                         .setAction(R.string.add_new_city_snackbar, v -> {
                             Log.d(TAG, "CitiesFragment. Add new city: " + newCityName);
-                            adapter.add(newCityName);
-                            onItemClicked(newCityName);
+                            WEATHER_URL_CITY_FOR_SEARCH = newCityName;
+                            setFindCityOnOpenweathermap(newCityName);
+                            newCityNameText.setText("");
                         }).show();
             } else {
                 showError(newCityNameText, msgError);
@@ -123,7 +138,7 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
                     boolean visiblePressure = currentParcel.isVisiblePressure();
                     boolean darkTheme = currentParcel.isDarkTheme();
                     int countHoursBetweenForecasts = currentParcel.getCountHoursBetweenForecasts();
-                    currentParcel = new Parcel(itemText, visibleWind, visiblePressure, countHoursBetweenForecasts, darkTheme, listData);
+                    currentParcel = new Parcel(itemText, visibleWind, visiblePressure, countHoursBetweenForecasts, darkTheme, listData, lon, lat);
                     showWeather(currentParcel);
                 }).show();
     }
@@ -143,7 +158,9 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
             currentParcel = (Parcel) savedInstanceState.getSerializable("CurrentCity");
         } else {
             //+ Если востановить не удалось, то сделаем объект с первым индексом
-            currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[0], true, true, 1, false, listData);
+            currentParcel = new Parcel(getResources().getStringArray(R.array.cities)[0], true,
+                    true, 1, false, listData,
+                    37.62f, 55.75f);
         }
 
         // Если можно нарисовать рядом погоду, то сделаем это
@@ -200,4 +217,85 @@ public class CitiesFragment extends Fragment  implements IRVOnItemClick{
             startActivity(intent);
         }
     }
+
+    /*Поиск города на сайте погоды*/
+    private void setFindCityOnOpenweathermap(String cityName) {
+        try {
+            final URL uri = new URL(WEATHER_URL_FOR_SEARCH + WEATHER_URL_CITY_FOR_SEARCH +
+                    WEATHER_SET_API_KEY_FOR_SEARCH + BuildConfig.WEATHER_API_KEY);
+            Log.e(TAG, "URI: " + uri);
+            final Handler handler = new Handler(); // Запоминаем основной поток
+            new Thread(() -> {
+                HttpsURLConnection urlConnection = null;
+                try {
+
+                    /*Настройки дла соединения с ПРОКСИ*/
+//                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.1.1", 111));
+//                    urlConnection = (HttpsURLConnection) uri.openConnection(proxy);
+                    urlConnection = (HttpsURLConnection) uri.openConnection();
+
+                    urlConnection.setRequestMethod("GET"); // установка метода получения данных -GET
+                    urlConnection.setReadTimeout(10000); // установка таймаута - 10 000 миллисекунд
+                    Log.e(TAG, "Connect: true");
+                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())); // читаем  данные в поток
+                    String result = getLines(in);
+                    // преобразование данных запроса в модель
+                    Log.e(TAG, "getLines() result: true");
+                    Gson gson = new Gson();
+                    final SearchRequest searchRequest = gson.fromJson(result, SearchRequest.class);
+                    // Возвращаемся к основному потоку
+                    handler.post(() -> searchCity(searchRequest, cityName));
+                } catch (Exception e) {
+                    Log.e(TAG, "Fail connection", e);
+
+                    Snackbar.make(Objects.requireNonNull(getActivity()).findViewById(android.R.id.content), R.string.сity_not_found,  Snackbar.LENGTH_LONG)
+                            .setAction(R.string.ok_button, v -> {
+                            }).show();
+
+                    e.printStackTrace();
+                } finally {
+                    if (null != urlConnection) {
+                        urlConnection.disconnect();
+                    }
+                }
+            }).start();
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "Fail URI", e);
+            e.printStackTrace();
+        }
+    }
+
+    /*Метод получения координат нового города*/
+    private void searchCity(SearchRequest searchRequest, String cityName) {
+        lon = Math.round(searchRequest.getCoord().getLon());
+        lat = Math.round(searchRequest.getCoord().getLat());
+
+        adapter.add(cityName);
+        onItemClicked(cityName);
+    }
+
+    private String getLines(BufferedReader in) {
+
+        StringBuilder rawData = new StringBuilder(1024);
+        String tempVariable;
+
+        while (true) {
+            try {
+                tempVariable = in.readLine();
+                if (tempVariable == null) break;
+                rawData.append(tempVariable).append("\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return rawData.toString();
+    }
+
 }

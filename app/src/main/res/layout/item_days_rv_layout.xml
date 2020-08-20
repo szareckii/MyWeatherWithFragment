@@ -4,7 +4,7 @@
     android:id="@+id/listDaysItemLayout"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:weightSum="6"
+    android:weightSum="5"
     android:orientation="horizontal">
 
     <TextView
@@ -19,28 +19,21 @@
         android:id="@+id/itemTempDayTextView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        style="@style/GravityWithTextSize"
+        style="@style/GravityWithLargeTextSize"
+        android:textStyle="bold"
         android:layout_weight="1"
         tools:text="@string/itemTextInRV" />
-
-    <ImageView
-        android:id="@+id/typeDayImageView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:contentDescription="@string/todo" />
 
     <TextView
         android:id="@+id/itemTempNightTextView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        style="@style/GravityWithTextSize"
+        style="@style/GravityWithSmallTextSize"
         tools:text="@string/itemTextInRV" />
 
     <ImageView
-        android:id="@+id/typeNightImageView"
+        android:id="@+id/typeDayImageView"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"

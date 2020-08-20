@@ -2,7 +2,7 @@
     <string name="app_name">My weather</string>
     <string name="textCity">NameCity</string>
     <string name="cityNameMoscow">Moscow</string>
-    <string name="textTempCurrent">TempCurrent</string>
+    <string name="textTempCurrent">textTempCurrent</string>
     <string name="textNow">Now</string>
     <string name="textPlusOneHour">TextView</string>
     <string name="textPlusThreeHours">TextView</string>
@@ -20,25 +20,26 @@
     <string name="textTempCurrentDayPlusTwoNight">TextView</string>
     <string name="textTempCurrentDayPlusThree">TextView</string>
     <string name="textTempCurrentDayPlusThreeNight">TextView</string>
-    <string name="textWindNow">TextView</string>
+    <string name="textWindNow">textWindNow</string>
     <string name="textWindPlusOneHour">TextView</string>
     <string name="textWindPlusTwoHours">TextView</string>
     <string name="textWindPlusThreeHours">TextView</string>
-    <string name="textPressureNow">TextView</string>
+    <string name="textPressureNow">textPressureNow</string>
     <string name="textPressurePlusOneHour">TextView</string>
     <string name="textPressurePlusTwoHours">TextView</string>
     <string name="textPressurePlusThreeHours">TextView</string>
     <string name="textChooseCity">Choose city</string>
     <string name="checkbox_set_visible_wind">Display wind speed</string>
     <string name="checkbox_set_visible_pressure">Display atmospheric pressure</string>
-    <string name="textUnitWindS">m/s, S</string>
-    <string name="textUnitWindN">m/s, N</string>
-    <string name="textUnitWindW">m/s, W</string>
-    <string name="textUnitWindE">m/s, E</string>
-    <string name="textUnitWindSW">m/s, SW</string>
-    <string name="textUnitWindSE">m/s, SE</string>
-    <string name="textUnitWindNW">m/s, NW</string>
-    <string name="textUnitWindNE">m/s, NE</string>
+    <string name="textUnitWind">m/s,</string>
+    <string name="textUnitWindS">S</string>
+    <string name="textUnitWindN">N</string>
+    <string name="textUnitWindW">W</string>
+    <string name="textUnitWindE">E</string>
+    <string name="textUnitWindSW">SW</string>
+    <string name="textUnitWindSE">SE</string>
+    <string name="textUnitWindNW">NW</string>
+    <string name="textUnitWindNE">NE</string>
     <string name="textUnitPressureNow">mm rt. st.</string>
     <string name="textNull"> </string>
     <string name="hint_choose_city">City</string>
@@ -66,5 +67,7 @@
     <string name="about_textview">My weather</string>
     <string name="version_textview">Version 0.1</string>
     <string name="developer_textview">Zareckii Stanislav</string>
+    <string name="сity_not_found">City not found</string>
+    <string name="fail_connection">Fail connection</string>
 </resources>
 

@@ -7,13 +7,11 @@ public class DataClassOfDays {
     String texTemptDay;
     Drawable drawableDay;
     String texTemptNight;
-    Drawable drawableNight;
 
-    public DataClassOfDays(String textDay, String texTemptDay, Drawable drawableDay, String texTemptNight, Drawable drawableNight) {
+    public DataClassOfDays(String textDay, String texTemptDay, Drawable drawableDay, String texTemptNight) {
         this.textDay = textDay;
         this.texTemptDay = texTemptDay;
         this.drawableDay = drawableDay;
         this.texTemptNight = texTemptNight;
-        this.drawableNight = drawableNight;
     }
 }

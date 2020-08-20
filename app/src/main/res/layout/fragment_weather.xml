@@ -44,58 +44,67 @@
         app:layout_constraintEnd_toStartOf="@+id/imageTypsWeather"
         app:layout_constraintTop_toTopOf="@+id/imageTypsWeather" />
 
+
     <ImageView
         android:id="@+id/imageTypsWeather"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/todo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.585"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textCity"
+        app:layout_constraintStart_toStartOf="@+id/textCity"
         app:layout_constraintTop_toBottomOf="@+id/textCity"
         app:srcCompat="@drawable/ic_launcher_background" />
 
-
     <TextView
         android:id="@+id/textWindNow"
-        android:layout_width="32dp"
-        android:layout_height="19dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         style="@style/SmallText"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/textWindPlusOneHour"
-        app:layout_constraintStart_toEndOf="@+id/imageTypsWeather"
+        app:layout_constraintEnd_toStartOf="@+id/textUnitWind"
         app:layout_constraintTop_toTopOf="@+id/imageTypsWeather" />
 
     <TextView
         android:id="@+id/textPressureNow"
-        android:layout_width="32dp"
-        android:layout_height="19dp"
         style="@style/SmallText"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/textPressurePlusOneHour"
-        app:layout_constraintStart_toStartOf="@+id/textWindNow"
-        app:layout_constraintTop_toBottomOf="@+id/textWindNow" />
+        app:layout_constraintEnd_toStartOf="@+id/textUnitPressureNow"
+        app:layout_constraintTop_toTopOf="@+id/textUnitPressureNow" />
 
     <TextView
-        android:id="@+id/textUnitWindNow"
+        android:id="@+id/textWindDegree"
+        style="@style/SmallText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/SmallText"
+        android:layout_marginStart="8dp"
         android:text="@string/textUnitWindS"
-        app:layout_constraintEnd_toStartOf="@+id/textPressureNow"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textWindNow"
+        app:layout_constraintStart_toEndOf="@+id/textUnitWind"
+        app:layout_constraintTop_toTopOf="@+id/textUnitWind" />
+
+    <TextView
+        android:id="@+id/textUnitWind"
+        style="@style/SmallText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:text="@string/textUnitWind"
+        app:layout_constraintStart_toEndOf="@+id/imageTypsWeather"
         app:layout_constraintTop_toTopOf="@+id/textWindNow" />
 
     <TextView
         android:id="@+id/textUnitPressureNow"
+        style="@style/SmallText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/textUnitPressureNow"
-        style="@style/SmallText"
-        app:layout_constraintStart_toEndOf="@+id/textPressureNow"
-        app:layout_constraintTop_toTopOf="@+id/textPressureNow" />
+        app:layout_constraintStart_toStartOf="@+id/textUnitWind"
+        app:layout_constraintTop_toBottomOf="@+id/textUnitWind" />
 
     <ImageButton
         android:id="@+id/imageBtnWeatherFromYandex"
@@ -112,24 +121,25 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/daysRecyclerView"
+        style="@style/Margin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        style="@style/Margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hoursRecyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/hoursRecyclerView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/hoursRecyclerView"
+        style="@style/Margin"
         android:layout_width="match_parent"
         android:layout_height="115dp"
-        style="@style/Margin"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageTypsWeather"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/imageTypsWeather" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

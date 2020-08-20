@@ -23,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
     private int countHoursBetweenForecasts = 3;
     private CheckBox checkBoxSetVisibleWind;
     private CheckBox checkBoxSetVisiblePressure;
-    private static boolean darkTheme = false;
+    private static boolean darkTheme;
     private SwitchMaterial switchSetLightDarkTheme;
 
     @Override
@@ -134,11 +134,12 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
             checkBoxSetVisiblePressure.setChecked(false);
         }
 
-        if(getIntent().getExtras().getBoolean("DarkTheme")) {
+        if(SettingsActivity.isDarkTheme() ) {
             switchSetLightDarkTheme.setChecked(true);
         } else {
             switchSetLightDarkTheme.setChecked(false);
         }
+
 
         if (getIntent().getExtras().getInt("СountHoursBetweenForecasts") != 0) {
             countHoursBetweenForecasts = getIntent().getExtras().getInt("СountHoursBetweenForecasts");
@@ -180,6 +181,7 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
         super.onSaveInstanceState(saveInstanceState);
         Log.d(TAG, "SettingsAct. onSaveInstanceState()");
         saveInstanceState.putInt("CountHoursBetweenForecasts", countHoursBetweenForecasts); // Сохраняем количество часов между прогнозами
+
     }
 
     /*Метод переключения темы - светлая-темная*/

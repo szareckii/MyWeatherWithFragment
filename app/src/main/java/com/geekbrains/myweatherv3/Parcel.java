@@ -10,6 +10,8 @@ public class Parcel implements Serializable {
     private int countHoursBetweenForecasts;
     private boolean darkTheme;
     private ArrayList<String> data;
+    private float lon;
+    private float lat;
 
     public String getCityName() {
         return cityName;
@@ -51,12 +53,32 @@ public class Parcel implements Serializable {
         this.darkTheme = darkTheme;
     }
 
-    public Parcel(String cityName, boolean visibleWind, boolean visiblePressure, int countHoursBetweenForecasts, boolean darkTheme, ArrayList<String> data) {
+    public float getLon() {
+        return lon;
+    }
+
+    public void setLon(float lon) {
+        this.lon = lon;
+    }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public void setLat(float lat) {
+        this.lat = lat;
+    }
+
+    public Parcel(String cityName, boolean visibleWind, boolean visiblePressure, int countHoursBetweenForecasts,
+                  boolean darkTheme, ArrayList<String> data, float lon, float lat) {
         this.cityName = cityName;
         this.visibleWind = visibleWind;
         this.visiblePressure = visiblePressure;
         this.countHoursBetweenForecasts = countHoursBetweenForecasts;
         this.darkTheme = darkTheme;
         this.data = data;
+        this.lon = lon;
+        this.lat = lat;
+
     }
 }
