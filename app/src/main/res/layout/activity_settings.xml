@@ -2,10 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
     tools:context=".SettingsActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <CheckBox
         android:id="@+id/checkBoxSetVisibleWind"
@@ -15,9 +30,9 @@
         android:layout_marginTop="8dp"
         android:checked="true"
         android:text="@string/checkbox_set_visible_wind"
-        android:textSize="18sp"
+        style="@style/Text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar1" />
 
     <CheckBox
         android:id="@+id/checkBoxSetVisiblePressure"
@@ -25,29 +40,37 @@
         android:layout_height="wrap_content"
         android:checked="true"
         android:text="@string/checkbox_set_visible_pressure"
-        android:textSize="18sp"
+        style="@style/Text"
         app:layout_constraintStart_toStartOf="@+id/checkBoxSetVisibleWind"
         app:layout_constraintTop_toBottomOf="@+id/checkBoxSetVisibleWind" />
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switchSetTypeUnitDegree"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:showText="true"
         android:text="@string/switch_type_degree"
         android:textOff="@string/celsius"
         android:textOn="@string/fahrenheit"
-        android:textSize="18sp"
+        style="@style/MarginStartEndWithTextSize"
         app:layout_constraintStart_toStartOf="@+id/textSetTypeUnitDegree"
-        app:layout_constraintTop_toBottomOf="@+id/textSetTypeUnitDegree"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@+id/textSetTypeUnitDegree"       />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchSetLightDarkTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dark_theme"
+        style="@style/MarginStartEndWithTextSize"
+        app:layout_constraintStart_toStartOf="@+id/switchSetTypeUnitDegree"
+        app:layout_constraintTop_toBottomOf="@+id/switchSetTypeUnitDegree"       />
 
     <TextView
         android:id="@+id/textSetTypeUnitDegree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/units"
-        android:textSize="18sp"
+        style="@style/Text"
         app:layout_constraintStart_toStartOf="@+id/textCountHoursBetweenForecasts"
         app:layout_constraintTop_toBottomOf="@+id/seekBarCountHoursBetweenForecasts" />
 
@@ -56,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_count_hours_between_forecasts"
-        android:textSize="18sp"
+        style="@style/Text"
         app:layout_constraintStart_toStartOf="@+id/checkBoxSetVisiblePressure"
         app:layout_constraintTop_toBottomOf="@+id/checkBoxSetVisiblePressure" />
 

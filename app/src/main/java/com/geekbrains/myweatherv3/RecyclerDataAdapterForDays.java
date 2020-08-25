@@ -38,7 +38,6 @@ public class RecyclerDataAdapterForDays extends RecyclerView.Adapter<RecyclerDat
         holder.texTemptDay.setText(data.get(position).texTemptDay);
         holder.drawableDayImageView.setImageDrawable(data.get(position).drawableDay);
         holder.texTemptNight.setText(data.get(position).texTemptNight);
-        holder.drawableNightImageView.setImageDrawable(data.get(position).drawableNight);
     }
 
     @Override
@@ -51,7 +50,6 @@ public class RecyclerDataAdapterForDays extends RecyclerView.Adapter<RecyclerDat
         TextView texTemptDay;
         ImageView drawableDayImageView;
         TextView texTemptNight;
-        ImageView drawableNightImageView;
 
         ViewHolder(View view) {
             super(view);
@@ -60,7 +58,6 @@ public class RecyclerDataAdapterForDays extends RecyclerView.Adapter<RecyclerDat
             texTemptDay = itemView.findViewById(R.id.itemTempDayTextView);
             drawableDayImageView = itemView.findViewById(R.id.typeDayImageView);
             texTemptNight = itemView.findViewById(R.id.itemTempNightTextView);
-            drawableNightImageView = itemView.findViewById(R.id.typeNightImageView);
         }
     }
 }

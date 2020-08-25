@@ -1,44 +1,57 @@
 package com.geekbrains.myweatherv3;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.google.android.material.switchmaterial.SwitchMaterial;
+
 import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSeekBarChangeListener{
+public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSeekBarChangeListener {
     private TextView textValueCountHoursBetweenForecasts;
     private SeekBar seekBarCountHoursBetweenForecasts;
     private static final String TAG = "myLogs";
     private int countHoursBetweenForecasts = 3;
     private CheckBox checkBoxSetVisibleWind;
     private CheckBox checkBoxSetVisiblePressure;
+    private static boolean darkTheme;
+    private SwitchMaterial switchSetLightDarkTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (darkTheme) {
+            setTheme(R.style.AppDarkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         setContentView(R.layout.activity_settings);
 
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         findView();
         textValueCountHoursBetweenForecasts.setText("1");
 
         String instanceState;
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
             instanceState = "Первый запуск!";
-        }
-        else{
+        } else {
             instanceState = "Повторный запуск!";
         }
 
@@ -46,12 +59,24 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
 
         seekBarCountHoursBetweenForecasts.setOnSeekBarChangeListener(this);
         setSettings();
-
+        setDarkThemeClickBehavior();
     }
 
-    /*Метод нажатия на назад в баре*/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
+    public static boolean isDarkTheme() {
+        return darkTheme;
+    }
+
+    /*Метод нажатия кнопок в баре*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        /*если нажата кнопка "назад"*/
         if (item.getItemId() == android.R.id.home) {
             Intent intentResult = new Intent();
 
@@ -71,14 +96,29 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
                 Log.d(TAG, "SettingsAct. PressureVisible: false");
             }
 
+            if (darkTheme) {
+                intentResult.putExtra("darkTheme", true);
+            } else {
+                intentResult.putExtra("darkTheme", false);
+            }
+
             intentResult.putExtra("countHoursBetweenForecasts", countHoursBetweenForecasts);
             setResult(RESULT_OK, intentResult);
 
-            this.finish();
+            finish();
             return true;
         }
+
+        /*если нажата кнопка "разработчкики"*/
+        if (item.getItemId() == R.id.developers) {
+            Intent intent = new Intent(SettingsActivity.this, DeveloperActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
     /*Метод получения из ActiveMain и выставление текущих настроек*/
     private void setSettings() {
 
@@ -94,11 +134,20 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
             checkBoxSetVisiblePressure.setChecked(false);
         }
 
+        if(SettingsActivity.isDarkTheme() ) {
+            switchSetLightDarkTheme.setChecked(true);
+        } else {
+            switchSetLightDarkTheme.setChecked(false);
+        }
+
+
         if (getIntent().getExtras().getInt("СountHoursBetweenForecasts") != 0) {
             countHoursBetweenForecasts = getIntent().getExtras().getInt("СountHoursBetweenForecasts");
         }
+
         textValueCountHoursBetweenForecasts.setText(String.valueOf(countHoursBetweenForecasts));
         seekBarCountHoursBetweenForecasts.setProgress(countHoursBetweenForecasts - 1);
+
     }
 
     @Override
@@ -132,6 +181,15 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
         super.onSaveInstanceState(saveInstanceState);
         Log.d(TAG, "SettingsAct. onSaveInstanceState()");
         saveInstanceState.putInt("CountHoursBetweenForecasts", countHoursBetweenForecasts); // Сохраняем количество часов между прогнозами
+
+    }
+
+    /*Метод переключения темы - светлая-темная*/
+    private void setDarkThemeClickBehavior() {
+        switchSetLightDarkTheme.setOnClickListener(view -> {
+            darkTheme = switchSetLightDarkTheme.isChecked();
+            recreate();
+        });
     }
 
     /*Метод инициализации полей из ресурсов*/
@@ -140,5 +198,6 @@ public class SettingsActivity extends AppCompatActivity  implements SeekBar.OnSe
         seekBarCountHoursBetweenForecasts = findViewById(R.id.seekBarCountHoursBetweenForecasts);
         checkBoxSetVisibleWind = findViewById(R.id.checkBoxSetVisibleWind);
         checkBoxSetVisiblePressure = findViewById(R.id.checkBoxSetVisiblePressure);
+        switchSetLightDarkTheme = findViewById(R.id.switchSetLightDarkTheme);
     }
 }

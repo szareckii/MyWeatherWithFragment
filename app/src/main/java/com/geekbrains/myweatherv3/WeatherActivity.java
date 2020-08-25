@@ -2,7 +2,6 @@ package com.geekbrains.myweatherv3;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 // Эта activity для показа погоды в портретной ориентации
@@ -11,6 +10,13 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (SettingsActivity.isDarkTheme()) {
+            setTheme(R.style.AppDarkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         setContentView(R.layout.activity_weather);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -29,5 +35,11 @@ public class WeatherActivity extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.fragment_container, details).commit();
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+        recreate();
     }
 }
